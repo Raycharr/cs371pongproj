@@ -4,7 +4,7 @@ Contact Info
 Group Members & Email Addresses:
 
     Caroline Waters, cewa241@uky.edu
-    Person 2, person2@uky.edu
+    Alexander Wyatt, ajwy223@uky.edu
 
 Versioning
 ==========
