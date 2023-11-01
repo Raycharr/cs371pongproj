@@ -1,8 +1,8 @@
 # =================================================================================================
-# Contributing Authors:	    <Anyone who touched the code>
-# Email Addresses:          <Your uky.edu email addresses>
-# Date:                     <The date the file was last edited>
-# Purpose:                  <How this file contributes to the project>
+# Contributing Authors:	    Caroline Waters & AJ Wyatt
+# Email Addresses:          cewa241@uky.edu 
+# Date:                     11/1/23
+# Purpose:                  Implements a client 
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 
@@ -84,6 +84,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         
+
         
         # =========================================================================================
 
@@ -155,6 +156,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
+        
+        #I do not know if sync will be implicitly casted to a string or not
+        client.send(sync.encode())
+        resp = client.recv(1024)
+        server_status = resp.decode()
+        #if not in sync... do something
 
         # =========================================================================================
 
@@ -176,9 +183,16 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # Create a socket and connect to the server
     # You don't have to use SOCK_STREAM, use what you think is best
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((ip, port))
 
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
-
+    resp = client.recv(1024)
+    # server_info is a string -> how to get individual data from this string? need to have a standard format
+    server_info = resp.decode()
+    #parse server_info into corresponding variables:
+        #screenWidth
+        #screenHeight
+        #side (left or right)
 
     # If you have messages you'd like to show the user use the errorLabel widget like so
     errorLabel.config(text=f"Some update text. You input: IP: {ip}, Port: {port}")
