@@ -1,13 +1,18 @@
 # =================================================================================================
-# Contributing Authors:	    <Anyone who touched the code>
-# Email Addresses:          <Your uky.edu email addresses>
-# Date:                     <The date the file was last edited>
+# Contributing Authors:	    Alexander Wyatt
+# Email Addresses:          ajwy223@uky.edu
+# Date:                     11/1/2023
 # Purpose:                  <How this file contributes to the project>
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 
 import socket
 import threading
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+server.bind(("localhost",12321))
+server.listen(5)
 
 # Use this file to write your server logic
 # You will need to support at least two clients
