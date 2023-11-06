@@ -1,6 +1,6 @@
 # =================================================================================================
-# Contributing Authors:	    Caroline Waters & AJ Wyatt
-# Email Addresses:          cewa241@uky.edu 
+# Contributing Authors:	    Caroline Waters & Alexander Wyatt
+# Email Addresses:          cewa241@uky.edu, ajwy223@uky.edu
 # Date:                     11/1/23
 # Purpose:                  Implements a client 
 # Misc:                     <Not Required.  Anything else you might want to include>
