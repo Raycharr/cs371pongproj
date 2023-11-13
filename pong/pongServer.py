@@ -8,6 +8,7 @@
 
 import socket
 import threading
+from assets.code.helperCode import parse_msg, compile_msg
 
 # Use this file to write your server logic
 # You will need to support at least two clients
@@ -16,7 +17,8 @@ import threading
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
 
-def client_handler(currClient, addr):
+
+def client_handler(currClient, playerNum):
     #main loop for handling connected clients
     while True:
         msg = currClient.recv(1024)
@@ -33,6 +35,14 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      # Creating the s
 
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    # Working on localhost need this
 
-server.bind(("localhost", 12321))
+server.bind(("localhost", 12345))
 
-server.listen()
+server.listen(5)
+
+clientSocket, clientAddr = server.accept()
+
+firstClient = threading.Thread(target=client_handler, args = (clientSocket, 0))
+
+clientSocket, clientAddr = server.accept()
+
+secondClient = threading.Thread(target=client_handler, args = (clientSocket, 1))
