@@ -84,7 +84,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         
-
+        client_update = []
+        client.send(client_update);
         
         # =========================================================================================
 
@@ -157,11 +158,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
         
-        #I do not know if sync will be implicitly casted to a string or not
-        client.send(sync.encode())
+        client.send()
         resp = client.recv(1024)
         server_status = resp.decode()
         #if not in sync... do something
+        #if sync < server_status:
+            
 
         # =========================================================================================
 
