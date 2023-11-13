@@ -40,3 +40,14 @@ class Ball:
         self.rect.y = self.startYpos
         self.xVel = -5 if nowGoing == "left" else 5
         self.yVel = 0
+        
+def parse_msg(str):
+    str = str.split(",")
+    # sync, score, paddle1 x, paddle1 y, paddle2 x, paddle2 y, ball x, ball y,
+    return int(str[0]), int(str[1]), int(str[2]), int(str[3]), int(str[4]), int(str[5]), int(str[6]), int(str[7])
+
+def compile_msg(toSend):
+    result = str(toSend[0])
+    for i in range(1, 7):
+        result += "," + str(toSend[i])
+    return result
