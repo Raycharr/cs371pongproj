@@ -10,6 +10,10 @@ import socket
 import threading
 from assets.code.helperCode import parse_msg, compile_msg
 
+SCRN_WD = 250
+SCRN_HT = 250
+
+
 # Use this file to write your server logic
 # You will need to support at least two clients
 # You will need to keep track of where on the screen (x,y coordinates) each paddle is, the score 
@@ -17,11 +21,17 @@ from assets.code.helperCode import parse_msg, compile_msg
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
 
-
 def client_handler(currClient, playerNum):
+    playerZero = (SCRN_WD, SCRN_HT, "left")
+    playerOne = (SCRN_WD, SCRN_HT, "right")
     #main loop for handling connected clients
+    if playerNum == 0:
+        currClient.send(playerZero.encode())
+    else:
+        currClient.send(playerOne.encode())
+
     while True:
-        msg = currClient.recv(1024)
+        msg = currClient.recv(1024).decode()
         if msg == 'something weird':
             break
         #recieve packet from client
@@ -46,3 +56,7 @@ firstClient = threading.Thread(target=client_handler, args = (clientSocket, 0))
 clientSocket, clientAddr = server.accept()
 
 secondClient = threading.Thread(target=client_handler, args = (clientSocket, 1))
+
+firstClient.start()
+
+secondClient.start()
