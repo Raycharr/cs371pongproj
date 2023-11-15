@@ -15,6 +15,9 @@ SCRN_HT = 250
 PORT = 12345
 SERVER_IP = "localhost"
 
+# sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
+gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
 
 # Use this file to write your server logic
 # You will need to support at least two clients
@@ -22,6 +25,13 @@ SERVER_IP = "localhost"
 # for each player and where the ball is, and relay that to each client
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
+
+def swap_lr(statelist):
+    statelist.insert(7, statelist[4])
+    statelist.insert(7, statelist[3])
+    statelist.pop(3)
+    statelist.pop(3)
+
 
 def client_handler(currClient, playerNum):
     playerZero = (SCRN_WD, SCRN_HT, "left")
@@ -36,9 +46,16 @@ def client_handler(currClient, playerNum):
         msg = currClient.recv(1024).decode()
         if msg == 'something weird':
             break
-        #recieve packet from client
-        #check sync
-        #do other things
+        
+        msg = parse_msg(msg)
+        if playerNum == 1:
+            msg = swap_lr(msg)
+        
+        if gamestate[0] < msg[0]:
+            gamestate = msg
+        
+        currClient.send(compile_msg(msg).encode())
+        
     #close connection
     currClient.close()
 
