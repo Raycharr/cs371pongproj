@@ -12,6 +12,8 @@ from assets.code.helperCode import parse_msg, compile_msg
 
 SCRN_WD = 250
 SCRN_HT = 250
+PORT = 12345
+SERVER_IP = "localhost"
 
 
 # Use this file to write your server logic
@@ -45,17 +47,22 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      # Creating the s
 
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    # Working on localhost need this
 
-server.bind(("localhost", 12345))
+server.bind((SERVER_IP, PORT))
 
 server.listen(5)
+print("Server listening on port {0}".format(PORT))
 
 clientSocket, clientAddr = server.accept()
+print("Client {0} connected".format(clientAddr))
 
 firstClient = threading.Thread(target=client_handler, args = (clientSocket, 0))
+print("Player 1 connected, waiting for second player")
 
 clientSocket, clientAddr = server.accept()
+print("Client{0} connected".format(clientAddr))
 
 secondClient = threading.Thread(target=client_handler, args = (clientSocket, 1))
+print("Player 2 connected, starting game")
 
 firstClient.start()
 
