@@ -84,12 +84,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         
-        if(playerPaddle == "left"):
-            score = lscore
-        else:
-            score = rscore
-        client_update = [sync, score, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, oopponentPaddleObj.y, ball.rect.x, ball.rect.y]
-        client.send(compile_msg(client_update));
+        client_update = [sync, lscore, rscore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, oopponentPaddleObj.y, ball.rect.x, ball.rect.y]
+        client.send(compile_msg(client_update).encode());
         
         # =========================================================================================
 
@@ -162,23 +158,24 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-        if(playerPaddle == "left"):
-            score = lscore
-        else:
-            score = rscore
-        client_update = [sync, score, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.y, ball.rect.x, ball.rect.y]
-        client.send(compile_msg(client_update))
+        client_update = [sync, lscore, rscore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.y, ball.rect.x, ball.rect.y]
+        client.send(compile_msg(client_update).encode())
         resp = client.recv(1024)
         server_status = parse_msg(resp.decode())
 
         # ======== SYNCING CLIENT TO MOST CURRENT DATA =============================================
         if sync < server_status[0]:
             #literally just repeat everything from earlier using the info from the server
-                # Update the player paddle and opponent paddle's location on the screen
-            playerPaddleObj.rect.x = server_status[2]
-            playerPaddleObj.rect.y = server_status[3]
-            opponentPaddleObj.rect.x = server_status[4]
-            opponentPaddleObj.rect.y = server_status[5]
+            
+            #Update the actual current score from the server
+            lscore = server_status[1]
+            rscore = server_status[2]
+            
+            # Update the player paddle and opponent paddle's location on the screen
+            playerPaddleObj.rect.x = server_status[3]
+            playerPaddleObj.rect.y = server_status[4]
+            opponentPaddleObj.rect.x = server_status[5]
+            opponentPaddleObj.rect.y = server_status[6]
 
             # If the game is over, display the win message
             if lScore > 4 or rScore > 4:
@@ -231,14 +228,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             pygame.draw.rect(screen, WHITE, bottomWall)
             scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
             #change line to pygame.display.update() if updating the display does not work
-            pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])
-            clock.tick(60)
-        #client.send()
-        #resp = client.recv(1024)
-        #server_status = resp.decode()
-        #if not in sync... do something
-        #if sync < server_status:
-            
+            pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
 
         # =========================================================================================
 
@@ -265,7 +255,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
     resp = client.recv(1024)
     # server_info is a string -> how to get individual data from this string? need to have a standard format
-    server_info = resp.decode()
+    my_side = resp.decode()
     #parse server_info into corresponding variables:
         #screenWidth
         #screenHeight
@@ -277,9 +267,9 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     errorLabel.update()     
 
     # Close this window and start the game with the info passed to you from the server
-    #app.withdraw()     # Hides the window (we'll kill it later)
-    #playGame(screenWidth, screenHeight, ("left"|"right"), client)  # User will be either left or right paddle
-    #app.quit()         # Kills the window
+    app.withdraw()     # Hides the window (we'll kill it later)
+    playGame(640, 480, my_side, client)  # User will be either left or right paddle
+    app.quit()         # Kills the window
 
 
 # This displays the opening screen, you don't need to edit this (but may if you like)
