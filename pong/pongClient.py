@@ -160,7 +160,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # opponent's game
         client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y]
         client.send(compile_msg(client_update).encode())
-        resp = client.recv(1024)
+        resp = client.recv(2048)
         testresp = resp.decode()
         print(testresp)
         server_status = parse_msg(resp.decode())
@@ -255,7 +255,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     client.connect((ip, int(port)))
 
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
-    resp = client.recv(1024)
+    resp = client.recv(2048)
     # server_info is a string -> how to get individual data from this string? need to have a standard format
     my_side = resp.decode()
     print(my_side)
