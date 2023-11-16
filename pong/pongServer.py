@@ -38,12 +38,15 @@ def client_handler(currClient, playerNum):
     playerOne = (SCRN_WD, SCRN_HT, "right")
     #main loop for handling connected clients
     if playerNum == 0:
-        currClient.send(playerZero.encode())
+        currClient.send("left".encode())
     else:
-        currClient.send(playerOne.encode())
+        currClient.send("right".encode())
 
     while True:
+        
         msg = currClient.recv(1024).decode()
+        print(msg)
+        
         if msg == 'something weird':
             break
         
