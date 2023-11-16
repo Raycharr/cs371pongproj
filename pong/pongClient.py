@@ -275,6 +275,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     app.withdraw()     # Hides the window (we'll kill it later)
     playGame(640, 480, my_side, client)  # User will be either left or right paddle
     app.quit()         # Kills the window
+    client.close()
 
 
 # This displays the opening screen, you don't need to edit this (but may if you like)
