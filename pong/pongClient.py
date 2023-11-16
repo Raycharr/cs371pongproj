@@ -84,9 +84,13 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         
-        client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
-        client.send(compile_msg(client_update).encode());
         
+        #client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+        try:
+            client.send(compile_msg(client_update).encode());
+        except:
+            print("Failed to send an update to the server")
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
@@ -160,9 +164,19 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # opponent's game
         #client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y]
         #client_update = [0,1,2,3,4,5,6,7,8]
-        client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
-        client.send(compile_msg(client_update).encode())
-        resp = client.recv(2048)
+        #client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+        try:
+            client.send(compile_msg(client_update).encode())
+        except:
+            print("Failed to send an update to the sercer")
+        
+        try:
+            resp = client.recv(2048)
+        except:
+            print("Failed to receive a response from the server")
+        
+        
         testresp = resp.decode()
         print(testresp)
         server_status = parse_msg(resp.decode())
