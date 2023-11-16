@@ -44,7 +44,7 @@ def client_handler(currClient, playerNum):
 
     while True:
         
-        msg = currClient.recv(1024).decode()
+        msg = currClient.recv(2048).decode()
         print(msg)
         
         if msg == 'something weird':
