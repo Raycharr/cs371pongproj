@@ -15,7 +15,7 @@ SCRN_HT = 480
 PORT = 12321
 SERVER_IP = "192.168.1.101"
 
-# sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
+#sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball x vel, ball y vel
 global gamestate 
 global gamelock
 gamelock = threading.Lock()
@@ -30,9 +30,7 @@ gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 # clients are and take actions to resync the games
 
 def swap_lr(statelist):
-    statelist.insert(7, statelist[4])
-    statelist.insert(7, statelist[3])
-    statelist.pop(3)
+    statelist.insert(5, statelist[3])
     statelist.pop(3)
 
 
@@ -47,10 +45,11 @@ def client_handler(currClient, playerNum):
     else:
         currClient.send("right".encode())
 
+    print("Player {0} started".format(playerNum))
+    
     while True:
         
         msg = currClient.recv(2048).decode()
-        print(msg)
         
         if msg == 'something weird':
             break
@@ -59,7 +58,7 @@ def client_handler(currClient, playerNum):
         msg = parse_msg(msg)
         if playerNum == 1:
             msg = swap_lr(msg)
-        print(msg)
+        print("player {0} received {1}".format(playerNum, msg))
         
         gamelock.acquire()
         
@@ -67,7 +66,7 @@ def client_handler(currClient, playerNum):
             gamestate = msg
 
         currClient.send(compile_msg(gamestate).encode())
-        
+        print("player {0} sent gamestate".format(playerNum))
         gamelock.release()
         
     #close connection
