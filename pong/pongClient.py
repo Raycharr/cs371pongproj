@@ -84,7 +84,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         
-        client_update = [sync, lscore, rscore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, oopponentPaddleObj.y, ball.rect.x, ball.rect.y]
+        client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, oopponentPaddleObj.y, ball.rect.x, ball.rect.y]
         client.send(compile_msg(client_update).encode());
         
         # =========================================================================================
@@ -158,7 +158,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-        client_update = [sync, lscore, rscore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.y, ball.rect.x, ball.rect.y]
+        client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.y, ball.rect.x, ball.rect.y]
         client.send(compile_msg(client_update).encode())
         resp = client.recv(1024)
         server_status = parse_msg(resp.decode())
@@ -168,8 +168,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             #literally just repeat everything from earlier using the info from the server
             
             #Update the actual current score from the server
-            lscore = server_status[1]
-            rscore = server_status[2]
+            lScore = server_status[1]
+            rScore = server_status[2]
             
             # Update the player paddle and opponent paddle's location on the screen
             playerPaddleObj.rect.x = server_status[3]
