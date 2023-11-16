@@ -11,3 +11,5 @@ pong/assets/code/__pycache__/helperCode.cpython-311.pyc
 *.sqlite
 .vs/cs371pongproj/v17/.wsuo
 *.pyc
+*.pyc
+*.sqlite
