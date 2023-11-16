@@ -83,7 +83,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Your code here to send an update to the server on your paddle's information,
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
-        
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, 0,0]
+
+        try:
+            client.send(compile_msg(client_update).encode())
+        except:
+            print("Failed to send an update to the sercer")
         
         #client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
         #client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
@@ -165,12 +170,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         #client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y]
         #client_update = [0,1,2,3,4,5,6,7,8]
         #client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y, 0, 0]
-        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, 0,0]
 
-        try:
-            client.send(compile_msg(client_update).encode())
-        except:
-            print("Failed to send an update to the sercer")
         
         try:
             resp = client.recv(2048)
@@ -194,10 +194,10 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Update the player paddle and opponent paddle's location on the screen
         #playerPaddleObj.rect.x = server_status[3]
         if playerPaddle == "left":
-            playerPaddleObj.rect.y = server_status[3]
+            #playerPaddleObj.rect.y = server_status[3]
             opponentPaddleObj.rect.y = server_status[4]
         else:
-            playerPaddleObj.rect.y = server_status[4]
+            #playerPaddleObj.rect.y = server_status[4]
             opponentPaddleObj.rect.y = server_status[3]
 
         # If the game is over, display the win message
