@@ -6,7 +6,6 @@
 # Misc:                     <Not Required.  Anything else you might want to include>
 # =================================================================================================
 
-from imp import acquire_lock
 import socket
 import threading
 from assets.code.helperCode import parse_msg, compile_msg
@@ -19,7 +18,7 @@ SERVER_IP = "192.168.1.101"
 # sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
 global gamestate 
 global gamelock
-gamelock = threading.Lock
+gamelock = threading.Lock()
 gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 
@@ -39,7 +38,7 @@ def swap_lr(statelist):
 
 def client_handler(currClient, playerNum):
     global gamestate
-    global gamelock
+    #global gamelock
     #playerZero = (SCRN_WD, SCRN_HT, "left")
     #playerOne = (SCRN_WD, SCRN_HT, "right")
     #main loop for handling connected clients
