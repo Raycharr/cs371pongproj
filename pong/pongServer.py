@@ -12,7 +12,7 @@ from assets.code.helperCode import parse_msg, compile_msg
 
 SCRN_WD = 640
 SCRN_HT = 480
-PORT = 12345
+PORT = 12321
 SERVER_IP = "192.168.1.101"
 
 # sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
@@ -38,12 +38,15 @@ def client_handler(currClient, playerNum):
     playerOne = (SCRN_WD, SCRN_HT, "right")
     #main loop for handling connected clients
     if playerNum == 0:
-        currClient.send(playerZero.encode())
+        currClient.send("left".encode())
     else:
-        currClient.send(playerOne.encode())
+        currClient.send("right".encode())
 
     while True:
-        msg = currClient.recv(1024).decode()
+        
+        msg = currClient.recv(2048).decode()
+        print(msg)
+        
         if msg == 'something weird':
             break
         
@@ -62,12 +65,13 @@ def client_handler(currClient, playerNum):
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      # Creating the server
 
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    # Working on localhost need this
+#server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    # Working on localhost need this
 
 server.bind((SERVER_IP, PORT))
 
 server.listen(5)
 print("Server listening on port {0}".format(PORT))
+print("Server info:{0}".format(server.getsockname()))
 
 clientSocket, clientAddr = server.accept()
 print("Client {0} connected".format(clientAddr))
@@ -76,7 +80,7 @@ firstClient = threading.Thread(target=client_handler, args = (clientSocket, 0))
 print("Player 1 connected, waiting for second player")
 
 clientSocket, clientAddr = server.accept()
-print("Client{0} connected".format(clientAddr))
+print("Client {0} connected".format(clientAddr))
 
 secondClient = threading.Thread(target=client_handler, args = (clientSocket, 1))
 print("Player 2 connected, starting game")

@@ -44,10 +44,15 @@ class Ball:
 def parse_msg(str):
     str = str.split(",")
     # sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
+    #return int(str[0]), int(str[1]), int(str[2]), int(str[3]), int(str[4]), int(str[5]), int(str[6]), int(str[7]), int(str[8])
+    
+    #sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball x vel, ball y vel
     return int(str[0]), int(str[1]), int(str[2]), int(str[3]), int(str[4]), int(str[5]), int(str[6]), int(str[7]), int(str[8])
 
 def compile_msg(toSend):
     result = str(toSend[0])
-    for i in range(1, 8):
+    for i in range(1, 9):
         result += "," + str(toSend[i])
+        
+    print(result)
     return result
