@@ -185,6 +185,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # ======== UPDATING CLIENT TO MOST CURRENT DATA =============================================
         #if sync < server_status[0]:
             #literally just repeat everything from earlier using the info from the server
+
             
             #Update the actual current score from the server
         lScore = server_status[1]
@@ -192,9 +193,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             
         # Update the player paddle and opponent paddle's location on the screen
         #playerPaddleObj.rect.x = server_status[3]
-        playerPaddleObj.rect.y = server_status[3]
-        #opponentPaddleObj.rect.x = server_status[5]
-        opponentPaddleObj.rect.y = server_status[4]
+        if playerPaddle == "left":
+            playerPaddleObj.rect.y = server_status[3]
+            opponentPaddleObj.rect.y = server_status[4]
+        else:
+            playerPaddleObj.rect.y = server_status[4]
+            opponentPaddleObj.rect.y = server_status[3]
 
         # If the game is over, display the win message
         if lScore > 4 or rScore > 4:
