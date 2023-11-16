@@ -181,73 +181,73 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         print(testresp)
         server_status = parse_msg(resp.decode())
 
-        # ======== SYNCING CLIENT TO MOST CURRENT DATA =============================================
-        if sync < server_status[0]:
+        # ======== UPDATING CLIENT TO MOST CURRENT DATA =============================================
+        #if sync < server_status[0]:
             #literally just repeat everything from earlier using the info from the server
             
             #Update the actual current score from the server
-            lScore = server_status[1]
-            rScore = server_status[2]
+        lScore = server_status[1]
+        rScore = server_status[2]
             
-            # Update the player paddle and opponent paddle's location on the screen
-            #playerPaddleObj.rect.x = server_status[3]
-            playerPaddleObj.rect.y = server_status[3]
-            #opponentPaddleObj.rect.x = server_status[5]
-            opponentPaddleObj.rect.y = server_status[4]
+        # Update the player paddle and opponent paddle's location on the screen
+        #playerPaddleObj.rect.x = server_status[3]
+        playerPaddleObj.rect.y = server_status[3]
+        #opponentPaddleObj.rect.x = server_status[5]
+        opponentPaddleObj.rect.y = server_status[4]
 
-            # If the game is over, display the win message
-            if lScore > 4 or rScore > 4:
-                winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
-                textSurface = winFont.render(winText, False, WHITE, (0,0,0))
-                textRect = textSurface.get_rect()
-                textRect.center = ((screenWidth/2), screenHeight/2)
-                winMessage = screen.blit(textSurface, textRect)
-            else:
+        # If the game is over, display the win message
+        if lScore > 4 or rScore > 4:
+            winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
+            textSurface = winFont.render(winText, False, WHITE, (0,0,0))
+            textRect = textSurface.get_rect()
+            textRect.center = ((screenWidth/2), screenHeight/2)
+            winMessage = screen.blit(textSurface, textRect)
+        else:
 
-            # ==== Ball Logic =====================================================================
-                ball.rect.x = server_status[5] + server_status[7]
-                ball.rect.y = server_status[6] + server_status[8]
+        # ==== Ball Logic =====================================================================
+            ball.rect.x = server_status[5] + server_status[7]
+            ball.rect.y = server_status[6] + server_status[8]
 
-                # If the ball makes it past the edge of the screen, update score, etc.
-                if ball.rect.x > screenWidth:
-                    lScore += 1
-                    pointSound.play()
-                    ball.reset(nowGoing="left")
-                elif ball.rect.x < 0:
-                    rScore += 1
-                    pointSound.play()
-                    ball.reset(nowGoing="right")
+            # If the ball makes it past the edge of the screen, update score, etc.
+            if ball.rect.x > screenWidth:
+                lScore += 1
+                pointSound.play()
+                ball.reset(nowGoing="left")
+            elif ball.rect.x < 0:
+                rScore += 1
+                pointSound.play()
+                ball.reset(nowGoing="right")
                 
-            # If the ball hits a paddle
-                if ball.rect.colliderect(playerPaddleObj.rect):
-                    bounceSound.play()
-                    ball.hitPaddle(playerPaddleObj.rect.center[1])
-                elif ball.rect.colliderect(opponentPaddleObj.rect):
-                    bounceSound.play()
-                    ball.hitPaddle(opponentPaddleObj.rect.center[1])
+        # If the ball hits a paddle
+            if ball.rect.colliderect(playerPaddleObj.rect):
+                bounceSound.play()
+                ball.hitPaddle(playerPaddleObj.rect.center[1])
+            elif ball.rect.colliderect(opponentPaddleObj.rect):
+                bounceSound.play()
+                ball.hitPaddle(opponentPaddleObj.rect.center[1])
                 
-            # If the ball hits a wall
-                if ball.rect.colliderect(topWall) or ball.rect.colliderect(bottomWall):
-                    bounceSound.play()
-                    ball.hitWall()
+        # If the ball hits a wall
+            if ball.rect.colliderect(topWall) or ball.rect.colliderect(bottomWall):
+                bounceSound.play()
+                ball.hitWall()
             
-                pygame.draw.rect(screen, WHITE, ball)
-            # ==== End Ball Logic =================================================================
+            pygame.draw.rect(screen, WHITE, ball)
+        # ==== End Ball Logic =================================================================
 
-            # Drawing the dotted line in the center
-            for i in centerLine:
-                pygame.draw.rect(screen, WHITE, i)
+        # Drawing the dotted line in the center
+        for i in centerLine:
+            pygame.draw.rect(screen, WHITE, i)
         
-        # Drawing the player's new location
-            for paddle in [playerPaddleObj, opponentPaddleObj]:
-                pygame.draw.rect(screen, WHITE, paddle)
+    # Drawing the player's new location
+        for paddle in [playerPaddleObj, opponentPaddleObj]:
+            pygame.draw.rect(screen, WHITE, paddle)
 
-            pygame.draw.rect(screen, WHITE, topWall)
-            pygame.draw.rect(screen, WHITE, bottomWall)
-            scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
-            #change line to pygame.display.update() if updating the display does not work
-            pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
-
+        pygame.draw.rect(screen, WHITE, topWall)
+        pygame.draw.rect(screen, WHITE, bottomWall)
+        scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
+        #change line to pygame.display.update() if updating the display does not work
+        pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
+            
         # =========================================================================================
 
 
