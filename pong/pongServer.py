@@ -19,7 +19,7 @@ SERVER_IP = "192.168.1.101"
 global gamestate 
 global gamelock
 gamelock = threading.Lock()
-gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+gamestate = [-1, 1, 2, 3, 4, 5, 6, 7, 8]
 
 
 # Use this file to write your server logic
@@ -32,6 +32,11 @@ gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 def swap_lr(statelist):
     statelist.insert(5, statelist[3])
     statelist.pop(3)
+    return statelist
+
+print(gamestate)
+gamestate = swap_lr(gamestate)
+print(gamestate)
 
 
 def client_handler(currClient, playerNum):
@@ -41,9 +46,9 @@ def client_handler(currClient, playerNum):
     #playerOne = (SCRN_WD, SCRN_HT, "right")
     #main loop for handling connected clients
     if playerNum == 0:
-        currClient.send("left".encode())
+        currClient.sendall("left".encode())
     else:
-        currClient.send("right".encode())
+        currClient.sendall("right".encode())
 
     print("Player {0} started".format(playerNum))
     
@@ -51,22 +56,23 @@ def client_handler(currClient, playerNum):
         
         msg = currClient.recv(2048).decode()
         
-        if msg == 'something weird':
+        if not msg:
             break
         
         
         msg = parse_msg(msg)
-        if playerNum == 1:
-            msg = swap_lr(msg)
-        print("player {0} received {1}".format(playerNum, msg))
+        #if playerNum == 1:
+        #    print("player {0} is swapping".format(playerNum))
+        #    swap_lr(msg)
+        #print("player {0} received {1}".format(playerNum, msg))
         
         gamelock.acquire()
         
         if gamestate[0] < msg[0]:
             gamestate = msg
 
-        currClient.send(compile_msg(gamestate).encode())
-        print("player {0} sent gamestate".format(playerNum))
+        currClient.sendall(compile_msg(gamestate).encode())
+        #print("player {0} sent gamestate".format(playerNum))
         gamelock.release()
         
     #close connection
