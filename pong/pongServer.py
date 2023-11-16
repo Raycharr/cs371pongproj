@@ -10,10 +10,10 @@ import socket
 import threading
 from assets.code.helperCode import parse_msg, compile_msg
 
-SCRN_WD = 250
-SCRN_HT = 250
+SCRN_WD = 640
+SCRN_HT = 480
 PORT = 12345
-SERVER_IP = "localhost"
+SERVER_IP = "192.168.1.101"
 
 # sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
 gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
