@@ -84,7 +84,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # where the ball is and the current score.
         # Feel free to change when the score is updated to suit your needs/requirements
         
-        client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, oopponentPaddleObj.y, ball.rect.x, ball.rect.y]
+        client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y]
         client.send(compile_msg(client_update).encode());
         
         # =========================================================================================
@@ -303,9 +303,9 @@ def startScreen():
     app.mainloop()
 
 if __name__ == "__main__":
-    #startScreen()
+    startScreen()
     
     # Uncomment the line below if you want to play the game without a server to see how it should work
     # the startScreen() function should call playGame with the arguments given to it by the server this is
     # here for demo purposes only
-    playGame(640, 480,"left",socket.socket(socket.AF_INET, socket.SOCK_STREAM))
+    #playGame(640, 480,"left",socket.socket(socket.AF_INET, socket.SOCK_STREAM))
