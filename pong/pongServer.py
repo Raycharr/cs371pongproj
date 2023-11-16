@@ -12,6 +12,11 @@ from assets.code.helperCode import parse_msg, compile_msg
 
 SCRN_WD = 250
 SCRN_HT = 250
+PORT = 12345
+SERVER_IP = "localhost"
+
+# sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
+gamestate = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 
 # Use this file to write your server logic
@@ -20,6 +25,13 @@ SCRN_HT = 250
 # for each player and where the ball is, and relay that to each client
 # I suggest you use the sync variable in pongClient.py to determine how out of sync your two
 # clients are and take actions to resync the games
+
+def swap_lr(statelist):
+    statelist.insert(7, statelist[4])
+    statelist.insert(7, statelist[3])
+    statelist.pop(3)
+    statelist.pop(3)
+
 
 def client_handler(currClient, playerNum):
     playerZero = (SCRN_WD, SCRN_HT, "left")
@@ -34,9 +46,16 @@ def client_handler(currClient, playerNum):
         msg = currClient.recv(1024).decode()
         if msg == 'something weird':
             break
-        #recieve packet from client
-        #check sync
-        #do other things
+        
+        msg = parse_msg(msg)
+        if playerNum == 1:
+            msg = swap_lr(msg)
+        
+        if gamestate[0] < msg[0]:
+            gamestate = msg
+        
+        currClient.send(compile_msg(msg).encode())
+        
     #close connection
     currClient.close()
 
@@ -45,17 +64,22 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      # Creating the s
 
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    # Working on localhost need this
 
-server.bind(("localhost", 12345))
+server.bind((SERVER_IP, PORT))
 
 server.listen(5)
+print("Server listening on port {0}".format(PORT))
 
 clientSocket, clientAddr = server.accept()
+print("Client {0} connected".format(clientAddr))
 
 firstClient = threading.Thread(target=client_handler, args = (clientSocket, 0))
+print("Player 1 connected, waiting for second player")
 
 clientSocket, clientAddr = server.accept()
+print("Client{0} connected".format(clientAddr))
 
 secondClient = threading.Thread(target=client_handler, args = (clientSocket, 1))
+print("Player 2 connected, starting game")
 
 firstClient.start()
 
