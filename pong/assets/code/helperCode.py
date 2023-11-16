@@ -48,6 +48,8 @@ def parse_msg(str):
 
 def compile_msg(toSend):
     result = str(toSend[0])
-    for i in range(1, 8):
+    for i in range(1, 9):
         result += "," + str(toSend[i])
+        
+    print(result)
     return result
