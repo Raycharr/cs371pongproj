@@ -10,45 +10,29 @@ import socket
 import threading
 from assets.code.helperCode import parse_msg, compile_msg
 
-SCRN_WD = 640
-SCRN_HT = 480
+# Server info
 PORT = 12321
 SERVER_IP = "192.168.1.101"
 
-#sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball x vel, ball y vel
+# Global variables for gamestate and lock
 global gamestate 
 global gamelock
-gamelock = threading.Lock()
+
+# Gamestate format:
+#       sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball x vel, ball y vel
 gamestate = [-1, 1, 2, 3, 4, 5, 6, 7, 8]
+gamelock = threading.Lock()
 
-
-# Use this file to write your server logic
-# You will need to support at least two clients
-# You will need to keep track of where on the screen (x,y coordinates) each paddle is, the score 
-# for each player and where the ball is, and relay that to each client
-# I suggest you use the sync variable in pongClient.py to determine how out of sync your two
-# clients are and take actions to resync the games
-
-def swap_lr(statelist):
-    statelist.insert(5, statelist[3])
-    statelist.pop(3)
-    return statelist
-
-print(gamestate)
-gamestate = swap_lr(gamestate)
-print(gamestate)
-
-
+# Function that handles threads. Each thread is responsible for
+# receiving and sending updates to its respective client.
 def client_handler(currClient, playerNum):
     global gamestate
-    #global gamelock
-    #playerZero = (SCRN_WD, SCRN_HT, "left")
-    #playerOne = (SCRN_WD, SCRN_HT, "right")
-    #main loop for handling connected clients
+    global gamelock
+
     if playerNum == 0:
-        currClient.sendall("left".encode())
+        currClient.send("left".encode())
     else:
-        currClient.sendall("right".encode())
+        currClient.send("right".encode())
 
     print("Player {0} started".format(playerNum))
     
@@ -59,29 +43,24 @@ def client_handler(currClient, playerNum):
         if not msg:
             break
         
-        
         msg = parse_msg(msg)
-        #if playerNum == 1:
-        #    print("player {0} is swapping".format(playerNum))
-        #    swap_lr(msg)
-        #print("player {0} received {1}".format(playerNum, msg))
         
+        #======== BEGIN CRITICAL SECTION ========
         gamelock.acquire()
         
+        # check sync of msg and gamestate, use more recent frame
         if gamestate[0] < msg[0]:
             gamestate = msg
-
-        currClient.sendall(compile_msg(gamestate).encode())
-        #print("player {0} sent gamestate".format(playerNum))
+        currClient.send(compile_msg(gamestate).encode())
+        
         gamelock.release()
+        #========= END CRITICAL SECTION =========
         
     #close connection
     currClient.close()
 
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      # Creating the server
-
-#server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)    # Working on localhost need this
 
 server.bind((SERVER_IP, PORT))
 
