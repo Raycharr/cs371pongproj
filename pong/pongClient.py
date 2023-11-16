@@ -85,12 +85,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Feel free to change when the score is updated to suit your needs/requirements
         
         
-        client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+        #client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
         #client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
-        try:
-            client.send(compile_msg(client_update).encode());
-        except:
-            print("Failed to send an update to the server")
+        #try:
+        #   client.send(compile_msg(client_update).encode());
+        #except:
+        #    print("Failed to send an update to the server")
         # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
@@ -164,7 +164,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # opponent's game
         #client_update = [sync, lScore, rScore, playerPaddleObj.rect.x, playerPaddleObj.rect.y, opponentPaddleObj.rect.x, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y]
         #client_update = [0,1,2,3,4,5,6,7,8]
-        client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+        client_update = [sync, lScore, rScore, playerPaddleObj.rect.y, opponentPaddleObj.rect.y, ball.rect.x, ball.rect.y, 0, 0]
         #client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
         try:
             client.send(compile_msg(client_update).encode())
@@ -205,8 +205,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         else:
 
         # ==== Ball Logic =====================================================================
-            ball.rect.x = server_status[5] + server_status[7]
-            ball.rect.y = server_status[6] + server_status[8]
+            ball.rect.x = server_status[5] + ball.xVel
+            ball.rect.y = server_status[6] + ball.yVel
 
             # If the ball makes it past the edge of the screen, update score, etc.
             if ball.rect.x > screenWidth:
