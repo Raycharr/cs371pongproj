@@ -267,7 +267,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
 
     # Close this window and start the game with the info passed to you from the server
     app.withdraw()     # Hides the window (we'll kill it later)
-    playGame(640, 480, my_side, client)  # User will be either left or right paddle
+    playGame(1280, 960, my_side, client)  # User will be either left or right paddle
     app.quit()         # Kills the window
     client.close()
 
