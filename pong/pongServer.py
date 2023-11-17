@@ -72,7 +72,7 @@ server.bind((SERVER_IP, PORT))
 # Wait for client connections
 server.listen(5)
 print(f"Server listening on port {PORT}")
-print(f"Server info:{server.getsockname}")
+print(f"Server info:{server.getsockname()}")
 
 # Client 1 connects as Player 1
 clientSocket, clientAddr = server.accept()
