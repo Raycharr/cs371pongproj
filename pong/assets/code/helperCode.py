@@ -41,18 +41,22 @@ class Ball:
         self.xVel = -5 if nowGoing == "left" else 5
         self.yVel = 0
         
-def parse_msg(str):
-    str = str.split(",")
-    # sync, lscore, rscore, lpaddle x, lpaddle y, rpaddle x, rpaddle y, ball x, ball y
-    #return int(str[0]), int(str[1]), int(str[2]), int(str[3]), int(str[4]), int(str[5]), int(str[6]), int(str[7]), int(str[8])
+# This function parses a string that follows our standardized formatting
+# and returns the output as a list.
+def parse_msg(inString:str) -> list:
+    #split string using comma as the delimiter
+    inString = inString.split(",")
     
-    #sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball x vel, ball y vel
-    return int(str[0]), int(str[1]), int(str[2]), int(str[3]), int(str[4]), int(str[5]), int(str[6]), int(str[7]), int(str[8])
+    #The following line is the standard format
+    #sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y
+    return int(inString[0]), int(inString[1]), int(inString[2]), int(inString[3]), int(inString[4]), int(inString[5]), int(inString[6])
 
-def compile_msg(toSend):
+# This function takes a list in our standard format and returns
+# a string with that data in our standard format.
+def compile_msg(toSend: list) -> str:
+    # Have to process the first data entry separately to ensure appropriate number of commas
     result = str(toSend[0])
-    for i in range(1, 9):
+    for i in range(1, 6):
         result += "," + str(toSend[i])
-        
-    print(result)
+    
     return result
