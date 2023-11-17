@@ -87,14 +87,14 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
         
     # Drawing the player's new location
-        for paddle in [playerPaddleObj, opponentPaddleObj]:
-            pygame.draw.rect(screen, WHITE, paddle)
+        # for paddle in [playerPaddleObj, opponentPaddleObj]:
+        #     pygame.draw.rect(screen, WHITE, paddle)
 
         pygame.draw.rect(screen, WHITE, topWall)
         pygame.draw.rect(screen, WHITE, bottomWall)
         scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
         #change line to pygame.display.update() if updating the display does not work
-        pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
+        # pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
         
         # =========================================================================================
 
@@ -145,9 +145,9 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             pygame.draw.rect(screen, WHITE, ball)
             # ==== End Ball Logic =================================================================
 
-        # Drawing the dotted line in the center
-        for i in centerLine:
-            pygame.draw.rect(screen, WHITE, i)
+        # # Drawing the dotted line in the center
+        # for i in centerLine:
+        #     pygame.draw.rect(screen, WHITE, i)
         
         # Drawing the player's new location
         for paddle in [playerPaddleObj, opponentPaddleObj]:
