@@ -1,9 +1,12 @@
 # =================================================================================================
 # Contributing Authors:	    Caroline Waters & Alexander Wyatt
 # Email Addresses:          cewa241@uky.edu, ajwy223@uky.edu
-# Date:                     11/1/23
-# Purpose:                  Implements a client 
-# Misc:                     <Not Required.  Anything else you might want to include>
+# Date:                     11/16/23
+# Purpose:                  Implements the pong client. Communicates with server in tandem with
+#                               another client to play a multiplayer pong game. 
+# Misc:                     Although functional, does tend to experience some lag. We believe that
+#                               this may be due to large discrepancies in sync status between the
+#                               two clients. Unsure if this is due to code structure or internet.
 # =================================================================================================
 
 import pygame
@@ -25,10 +28,10 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
     # Constants
     WHITE = (255,255,255)
     clock = pygame.time.Clock()
-    scoreFont = pygame.font.Font("./pong/assets/fonts/pong-score.ttf", 32)
-    winFont = pygame.font.Font("./pong/assets/fonts/visitor.ttf", 48)
-    pointSound = pygame.mixer.Sound("./pong/assets/sounds/point.wav")
-    bounceSound = pygame.mixer.Sound("./pong/assets/sounds/bounce.wav")
+    scoreFont = pygame.font.Font("./assets/fonts/pong-score.ttf", 32)
+    winFont = pygame.font.Font("./assets/fonts/visitor.ttf", 48)
+    pointSound = pygame.mixer.Sound("./assets/sounds/point.wav")
+    bounceSound = pygame.mixer.Sound("./assets/sounds/bounce.wav")
 
     # Display objects
     screen = pygame.display.set_mode((screenWidth, screenHeight))
@@ -48,6 +51,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
     ball = Ball(pygame.Rect(screenWidth/2, screenHeight/2, 5, 5), -5, 0)
 
+    #determine whose side is whose
     if playerPaddle == "left":
         opponentPaddleObj = rightPaddle
         playerPaddleObj = leftPaddle
@@ -78,25 +82,6 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
             elif event.type == pygame.KEYUP:
                 playerPaddleObj.moving = ""
-
-        # ====== SEND CLIENT UPDATE & RECEIVE SERVER RESPONSE ===================================================================================
-        # Your code here to send an update to the server on your paddle's information,
-        # where the ball is and the current score.
-        # Feel free to change when the score is updated to suit your needs/requirements
-
-
-        
-    # Drawing the player's new location
-        # for paddle in [playerPaddleObj, opponentPaddleObj]:
-        #     pygame.draw.rect(screen, WHITE, paddle)
-
-        #pygame.draw.rect(screen, WHITE, topWall)
-        #pygame.draw.rect(screen, WHITE, bottomWall)
-        #scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
-        #change line to pygame.display.update() if updating the display does not work
-        # pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
-        
-        # =========================================================================================
 
         # Update the player paddle and opponent paddle's location on the screen
         for paddle in [playerPaddleObj, opponentPaddleObj]:
@@ -156,7 +141,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         pygame.draw.rect(screen, WHITE, topWall)
         pygame.draw.rect(screen, WHITE, bottomWall)
         scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
-        #change line to pygame.display.update() if updating the display does not work
+
         pygame.display.update()
         clock.tick(60)
         
@@ -167,37 +152,33 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y, 0,0]
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y]
 
         try:
             client.send(compile_msg(client_update).encode())
         except:
             print("Failed to send an update to the server")
         
+        #get most updated game state from server
         try:
             resp = client.recv(2048)
         except:
             print("Failed to receive a response from the server")
         
-        
-        testresp = resp.decode()
-        print(testresp)
         server_status = parse_msg(resp.decode())
 
         # ======== UPDATING CLIENT USING THE SERVER DATA =============================================
+        #update sync to whatever is most current
         sync = server_status[0]
  
-            #Update the actual current score from the server
+        #Update to current score from the server
         lScore = server_status[1]
         rScore = server_status[2]
             
         # Update the player paddle and opponent paddle's location on the screen
-        #playerPaddleObj.rect.x = server_status[3]
         if playerPaddle == "left":
-            #playerPaddleObj.rect.y = server_status[3]
             opponentPaddleObj.rect.y = server_status[4]
         else:
-            #playerPaddleObj.rect.y = server_status[4]
             opponentPaddleObj.rect.y = server_status[3]
 
         # If the game is over, display the win message
@@ -250,7 +231,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         pygame.draw.rect(screen, WHITE, topWall)
         pygame.draw.rect(screen, WHITE, bottomWall)
         scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
-        #change line to pygame.display.update() if updating the display does not work
+        
         pygame.display.update()
     #===== END UPDATE USING SERVER DATA ===========================================================
         # =========================================================================================
@@ -277,13 +258,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
 
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
     resp = client.recv(2048)
-    # server_info is a string -> how to get individual data from this string? need to have a standard format
     my_side = resp.decode()
-    print(my_side)
-    #parse server_info into corresponding variables:
-        #screenWidth
-        #screenHeight
-        #side (left or right)
 
     # If you have messages you'd like to show the user use the errorLabel widget like so
     errorLabel.config(text=f"Some update text. You input: IP: {ip}, Port: {port}")
@@ -302,7 +277,7 @@ def startScreen():
     app = tk.Tk()
     app.title("Server Info")
 
-    image = tk.PhotoImage(file="./pong/assets/images/logo.png")
+    image = tk.PhotoImage(file="./assets/images/logo.png")
 
     titleLabel = tk.Label(image=image)
     titleLabel.grid(column=0, row=0, columnspan=2)
@@ -329,8 +304,3 @@ def startScreen():
 
 if __name__ == "__main__":
     startScreen()
-    
-    # Uncomment the line below if you want to play the game without a server to see how it should work
-    # the startScreen() function should call playGame with the arguments given to it by the server this is
-    # here for demo purposes only
-    #playGame(640, 480,"left",socket.socket(socket.AF_INET, socket.SOCK_STREAM))
