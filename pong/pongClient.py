@@ -28,11 +28,12 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
     # Constants
     WHITE = (255,255,255)
+    STARTFRAME = 180
     clock = pygame.time.Clock()
-    scoreFont = pygame.font.Font("./assets/fonts/pong-score.ttf", 32)
-    winFont = pygame.font.Font("./assets/fonts/visitor.ttf", 48)
-    pointSound = pygame.mixer.Sound("./assets/sounds/point.wav")
-    bounceSound = pygame.mixer.Sound("./assets/sounds/bounce.wav")
+    scoreFont = pygame.font.Font("./pong/assets/fonts/pong-score.ttf", 32)
+    winFont = pygame.font.Font("./pong/assets/fonts/visitor.ttf", 48)
+    pointSound = pygame.mixer.Sound("./pong/assets/sounds/point.wav")
+    bounceSound = pygame.mixer.Sound("./pong/assets/sounds/bounce.wav")
 
     # Display objects
     screen = pygame.display.set_mode((screenWidth, screenHeight))
@@ -64,7 +65,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
     rScore = 0
 
     sync = 0
-
+    
     while True:
         # Wiping the screen
         screen.fill((0,0,0))
@@ -100,7 +101,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             textRect = textSurface.get_rect()
             textRect.center = ((screenWidth/2), screenHeight/2)
             winMessage = screen.blit(textSurface, textRect)
-        else:
+        elif sync > STARTFRAME:
 
             # ==== Ball Logic =====================================================================
             ball.updatePos()
@@ -129,8 +130,23 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
                 ball.hitWall()
             
             pygame.draw.rect(screen, WHITE, ball)
+        else:
+            pygame.draw.rect(screen, WHITE, ball)
             # ==== End Ball Logic =================================================================
-
+        
+        if sync < (STARTFRAME/3):
+            winText = "3"
+        elif sync < (2*STARTFRAME/3):
+            winText = "2"
+        elif sync < (STARTFRAME):
+            winText = "1"
+            
+        if sync <= STARTFRAME:
+            textSurface = winFont.render(winText, False, WHITE, (0,0,0))
+            textRect = textSurface.get_rect()
+            textRect.center = ((screenWidth/2), screenHeight/2)
+            winMessage = screen.blit(textSurface, textRect)
+            
         # # Drawing the dotted line in the center
         for i in centerLine:
             pygame.draw.rect(screen, WHITE, i)
@@ -189,11 +205,11 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             textRect = textSurface.get_rect()
             textRect.center = ((screenWidth/2), screenHeight/2)
             winMessage = screen.blit(textSurface, textRect)
-        else:
+        elif sync > STARTFRAME:
 
         # ==== Ball Logic =====================================================================
-            ball.rect.x = server_status[5] + ball.xVel
-            ball.rect.y = server_status[6] + ball.yVel
+            ball.rect.x = server_status[5]
+            ball.rect.y = server_status[6]
 
             # If the ball makes it past the edge of the screen, update score, etc.
             if ball.rect.x > screenWidth:
@@ -218,6 +234,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
                 bounceSound.play()
                 ball.hitWall()
             
+            pygame.draw.rect(screen, WHITE, ball)
+        else:
             pygame.draw.rect(screen, WHITE, ball)
         # ==== End Ball Logic =================================================================
 
@@ -278,7 +296,7 @@ def startScreen():
     app = tk.Tk()
     app.title("Server Info")
 
-    image = tk.PhotoImage(file="./assets/images/logo.png")
+    image = tk.PhotoImage(file="./pong/assets/images/logo.png")
 
     titleLabel = tk.Label(image=image)
     titleLabel.grid(column=0, row=0, columnspan=2)
@@ -304,4 +322,12 @@ def startScreen():
     app.mainloop()
 
 if __name__ == "__main__":
-    startScreen()
+    #startScreen()
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(("localhost",12321))
+    
+    # Get the required information from your server (screen width, height & player paddle, "left or "right)
+    resp = client.recv(2048)
+    my_side = resp.decode()
+
+    playGame(640, 480, my_side, client)  # User will be either left or right paddle
