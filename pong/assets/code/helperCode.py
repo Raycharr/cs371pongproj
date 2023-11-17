@@ -43,7 +43,7 @@ class Ball:
         
 # This function parses a string that follows our standardized formatting
 # and returns the output as a list.
-def parse_msg(inString:str) -> list:
+def parse_msg(inString:str) -> tuple:
     #split string using comma as the delimiter
     inString = inString.split(",")
     
@@ -53,7 +53,7 @@ def parse_msg(inString:str) -> list:
 
 # This function takes a list in our standard format and returns
 # a string with that data in our standard format.
-def compile_msg(toSend: list) -> str:
+def compile_msg(toSend: tuple) -> str:
     # Have to process the first data entry separately to ensure appropriate number of commas
     result = str(toSend[0])
     for i in range(1, 6):
