@@ -191,8 +191,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         else:
 
         # ==== Ball Logic =====================================================================
-            ball.rect.x = server_status[5] + (ball.xVel/5)
-            ball.rect.y = server_status[6] + (ball.yVel/5)
+            ball.rect.x = server_status[5] + ball.xVel
+            ball.rect.y = server_status[6] + ball.yVel
 
             # If the ball makes it past the edge of the screen, update score, etc.
             if ball.rect.x > screenWidth:
