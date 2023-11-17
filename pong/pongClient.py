@@ -185,6 +185,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         server_status = parse_msg(resp.decode())
 
         # ======== UPDATING CLIENT USING THE SERVER DATA =============================================
+        sync = server_status[0]
  
             #Update the actual current score from the server
         lScore = server_status[1]
