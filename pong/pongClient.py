@@ -173,7 +173,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y]
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y, ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
 
         try:
             client.send(compile_msg(client_update).encode())
@@ -212,6 +212,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         elif sync > STARTFRAME:
 
         # ==== Ball Logic =====================================================================
+            ball.xVel = server_status[7]
+            ball.yVel = server_status[8]
             ball.rect.x = server_status[5]
             ball.rect.y = server_status[6]
             ball.updatePos()

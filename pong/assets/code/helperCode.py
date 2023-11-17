@@ -48,15 +48,15 @@ def parse_msg(inString:str) -> tuple:
     inString = inString.split(",")
     
     #The following line is the standard format
-    #sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y
-    return int(inString[0]), int(inString[1]), int(inString[2]), int(inString[3]), int(inString[4]), int(inString[5]), int(inString[6])
+    #sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball vx, ball vy
+    return int(inString[0]), int(inString[1]), int(inString[2]), int(inString[3]), int(inString[4]), int(inString[5]), int(inString[6]), int(inString[7]), int(inString[8])
 
 # This function takes a list in our standard format and returns
 # a string with that data in our standard format.
 def compile_msg(toSend: tuple) -> str:
     # Have to process the first data entry separately to ensure appropriate number of commas
     result = str(toSend[0])
-    for i in range(1, 7):
+    for i in range(1, 9):
         result += "," + str(toSend[i])
     
     return result
