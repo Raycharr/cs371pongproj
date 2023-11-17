@@ -44,6 +44,7 @@ def client_handler(currClient, playerNum):
             break
         
         msg = parse_msg(msg)
+        print(msg)
         
         #======== BEGIN CRITICAL SECTION ========
         gamelock.acquire()
