@@ -90,9 +90,9 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # for paddle in [playerPaddleObj, opponentPaddleObj]:
         #     pygame.draw.rect(screen, WHITE, paddle)
 
-        pygame.draw.rect(screen, WHITE, topWall)
-        pygame.draw.rect(screen, WHITE, bottomWall)
-        scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
+        #pygame.draw.rect(screen, WHITE, topWall)
+        #pygame.draw.rect(screen, WHITE, bottomWall)
+        #scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
         #change line to pygame.display.update() if updating the display does not work
         # pygame.display.update([topWall, bottomWall, ball, leftPaddle, rightPaddle, scoreRect, winMessage])            
         
@@ -146,8 +146,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             # ==== End Ball Logic =================================================================
 
         # # Drawing the dotted line in the center
-        # for i in centerLine:
-        #     pygame.draw.rect(screen, WHITE, i)
+        for i in centerLine:
+            pygame.draw.rect(screen, WHITE, i)
         
         # Drawing the player's new location
         for paddle in [playerPaddleObj, opponentPaddleObj]:
@@ -241,6 +241,16 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Drawing the dotted line in the center
         for i in centerLine:
             pygame.draw.rect(screen, WHITE, i)
+        
+        # Drawing the player's new location
+        for paddle in [playerPaddleObj, opponentPaddleObj]:
+            pygame.draw.rect(screen, WHITE, paddle)
+
+        pygame.draw.rect(screen, WHITE, topWall)
+        pygame.draw.rect(screen, WHITE, bottomWall)
+        scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
+        #change line to pygame.display.update() if updating the display does not work
+        pygame.display.update()
     #===== END UPDATE USING SERVER DATA ===========================================================
         # =========================================================================================
 
