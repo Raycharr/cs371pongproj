@@ -194,10 +194,10 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # Update the player paddle and opponent paddle's location on the screen
         #playerPaddleObj.rect.x = server_status[3]
         if playerPaddle == "left":
-            playerPaddleObj.rect.y = server_status[3]
+            #playerPaddleObj.rect.y = server_status[3]
             opponentPaddleObj.rect.y = server_status[4]
         else:
-            playerPaddleObj.rect.y = server_status[4]
+            #playerPaddleObj.rect.y = server_status[4]
             opponentPaddleObj.rect.y = server_status[3]
 
         # If the game is over, display the win message
