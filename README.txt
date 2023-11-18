@@ -13,8 +13,11 @@ Github Link:
 
 General Info
 ============
-This file describes how to install/run your program and anything else you think the user should know
+Program was made using Python 3.11 - recommended version to run this file
+Must be run in the pong directory in order to access assets folder
 
+python pongClient.py (on client computers)
+python pongServer.py (on server computer)
 Install Instructions
 ====================
 
@@ -24,6 +27,8 @@ Run the following line to install the required libraries for this project:
 
 Known Bugs
 ==========
-- The server doesn't work because the logic isn't yet written.
-- The client doesn't speak to the server
+- the ball occasionally gets past the top or bottom screen border if it is moving fast enough
+- the ball gains massive speed if it hits the top or bottom edge of the paddle
+- network lag spikes that cause balls or paddles to not update appropriately
+
 
