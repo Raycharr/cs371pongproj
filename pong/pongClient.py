@@ -323,12 +323,12 @@ def startScreen():
     app.mainloop()
 
 if __name__ == "__main__":
-    #startScreen()
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect(("localhost",12321))
+    startScreen()
+    # client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # client.connect(("localhost",12321))
     
-    # Get the required information from your server (screen width, height & player paddle, "left or "right)
-    resp = client.recv(2048)
-    my_side = resp.decode()
+    # # Get the required information from your server (screen width, height & player paddle, "left or "right)
+    # resp = client.recv(2048)
+    # my_side = resp.decode()
 
-    playGame(640, 480, my_side, client)  # User will be either left or right paddle
+    # playGame(640, 480, my_side, client)  # User will be either left or right paddle
