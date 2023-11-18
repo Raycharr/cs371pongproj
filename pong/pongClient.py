@@ -28,6 +28,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
     # Constants
     WHITE = (255,255,255)
+    GRAY = (150,150,150)
+    STARTFRAME = 180
     clock = pygame.time.Clock()
     scoreFont = pygame.font.Font("./assets/fonts/pong-score.ttf", 32)
     winFont = pygame.font.Font("./assets/fonts/visitor.ttf", 48)
@@ -64,7 +66,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
     rScore = 0
 
     sync = 0
-
+    
     while True:
         # Wiping the screen
         screen.fill((0,0,0))
@@ -93,6 +95,11 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
                 if paddle.rect.topleft[1] > 10:
                     paddle.rect.y -= paddle.speed
 
+
+        # Drawing the dotted line in the center
+        for i in centerLine:
+            pygame.draw.rect(screen, GRAY, i)
+            
         # If the game is over, display the win message
         if lScore > 4 or rScore > 4:
             winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
@@ -100,7 +107,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             textRect = textSurface.get_rect()
             textRect.center = ((screenWidth/2), screenHeight/2)
             winMessage = screen.blit(textSurface, textRect)
-        else:
+        elif sync > STARTFRAME:
 
             # ==== Ball Logic =====================================================================
             ball.updatePos()
@@ -130,10 +137,23 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             
             pygame.draw.rect(screen, WHITE, ball)
             # ==== End Ball Logic =================================================================
-
-        # # Drawing the dotted line in the center
-        for i in centerLine:
-            pygame.draw.rect(screen, WHITE, i)
+        
+        if sync < (STARTFRAME/3):
+            winText = "3"
+        elif sync < (2*STARTFRAME/3):
+            winText = "2"
+        elif sync < (STARTFRAME):
+            winText = "1"
+        elif sync < (STARTFRAME + (STARTFRAME/3)):
+            winText = "GO!"
+            
+            
+        if sync <= (STARTFRAME + (STARTFRAME/3)):
+            textSurface = winFont.render(winText, False, WHITE, (0,0,0))
+            textRect = textSurface.get_rect()
+            textRect.center = ((screenWidth/2), screenHeight/2)
+            winMessage = screen.blit(textSurface, textRect)
+            
         
         # Drawing the player's new location
         for paddle in [playerPaddleObj, opponentPaddleObj]:
@@ -153,7 +173,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         # =========================================================================================
         # Send your server update here at the end of the game loop to sync your game with your
         # opponent's game
-        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y,ball.rect.x, ball.rect.y]
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y, ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
 
         try:
             client.send(compile_msg(client_update).encode())
@@ -189,11 +209,14 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             textRect = textSurface.get_rect()
             textRect.center = ((screenWidth/2), screenHeight/2)
             winMessage = screen.blit(textSurface, textRect)
-        else:
+        elif sync > STARTFRAME:
 
         # ==== Ball Logic =====================================================================
-            ball.rect.x = server_status[5] + ball.xVel
-            ball.rect.y = server_status[6] + ball.yVel
+            ball.xVel = server_status[7]
+            ball.yVel = server_status[8]
+            ball.rect.x = server_status[5]
+            ball.rect.y = server_status[6]
+            ball.updatePos()
 
             # If the ball makes it past the edge of the screen, update score, etc.
             if ball.rect.x > screenWidth:
@@ -221,10 +244,6 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             pygame.draw.rect(screen, WHITE, ball)
         # ==== End Ball Logic =================================================================
 
-        # Drawing the dotted line in the center
-        for i in centerLine:
-            pygame.draw.rect(screen, WHITE, i)
-        
         # Drawing the player's new location
         for paddle in [playerPaddleObj, opponentPaddleObj]:
             pygame.draw.rect(screen, WHITE, paddle)
@@ -268,7 +287,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
 
     # Close this window and start the game with the info passed to you from the server
     app.withdraw()     # Hides the window (we'll kill it later)
-    playGame(640, 480, my_side, client)  # User will be either left or right paddle
+    playGame(960, 720, my_side, client)  # User will be either left or right paddle
     app.quit()         # Kills the window
     client.close()
 
