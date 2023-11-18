@@ -15,6 +15,7 @@ General Info
 ============
 Program was made using Python 3.11 - recommended version to run this file
 Must be run in the pong directory in order to access assets folder
+Must change server IP from "localhost" to your IP to run
 
 python pongClient.py (on client computers)
 python pongServer.py (on server computer)
