@@ -9,7 +9,7 @@ Group Members & Email Addresses:
 Versioning
 ==========
 
-Github Link: 
+Github Link: https://github.com/Raycharr/cs371pongproj
 
 General Info
 ============
