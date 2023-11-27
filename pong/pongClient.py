@@ -86,6 +86,13 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             elif event.type == pygame.KEYUP:
                 playerPaddleObj.moving = ""
 
+        client_update = [sync, lScore, rScore, leftPaddle.rect.y, rightPaddle.rect.y, ball.rect.x, ball.rect.y, ball.xVel, ball.yVel]
+
+        try:
+            client.send(compile_msg(client_update).encode())
+        except:
+            print("Failed to send an update to the server")
+
         # Update the player paddle and opponent paddle's location on the screen
         for paddle in [playerPaddleObj, opponentPaddleObj]:
             if paddle.moving == "down":
@@ -182,7 +189,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         
         #get most updated game state from server
         try:
-            resp = client.recv(2048)
+            resp = client.recv(1024)
         except:
             print("Failed to receive a response from the server")
         
@@ -277,7 +284,7 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     client.connect((ip, int(port)))
 
     # Get the required information from your server (screen width, height & player paddle, "left or "right)
-    resp = client.recv(2048)
+    resp = client.recv(1024)
     my_side = resp.decode()
 
     # If you have messages you'd like to show the user use the errorLabel widget like so
