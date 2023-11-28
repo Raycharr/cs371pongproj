@@ -63,7 +63,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         centerLine.append(pygame.Rect((screenWidth/2)-5,i,5,5))
 
     # Paddle properties and init
-    paddleHeight = 100
+    paddleHeight = 50
     paddleWidth = 10
     paddleStartPosY = (screenHeight/2)-(paddleHeight/2)
     leftPaddle = Paddle(pygame.Rect(10,paddleStartPosY, paddleWidth, paddleHeight))
