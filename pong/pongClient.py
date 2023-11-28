@@ -14,24 +14,9 @@ import pygame
 import tkinter as tk
 import sys
 import socket
+import csv
 
 from assets.code.helperCode import *
-
-# Method responsible for sending and receiving the gamestate payload to and from the server.
-def update_server(clientInfo:tuple, client:socket.socket) -> tuple:
-    # send our gamestate to server
-    try:
-        client.send(compile_msg(clientInfo).encode())
-    except:
-        print("Failed to send an update to the server")
-        
-    # get most updated game state from server
-    try:
-        resp = client.recv(PAYLOAD_SIZE)
-    except:
-        print("Failed to receive a response from the server")
-            
-    return parse_msg(resp.decode())
 
 # This is the main game loop.  For the most part, you will not need to modify this.  The sections
 # where you should add to the code are marked.  Feel free to change any part of this project
@@ -296,7 +281,9 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
     # port          A string holding the port the server is using
     # errorLabel    A tk label widget, modify it's text to display messages to the user (example below)
     # app           The tk window object, needed to kill the window
-    
+
+    set_server_info((ip, port))    
+
     # Create a socket and connect to the server
     # You don't have to use SOCK_STREAM, use what you think is best
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -322,6 +309,8 @@ def joinServer(ip:str, port:str, errorLabel:tk.Label, app:tk.Tk) -> None:
 def startScreen():
     app = tk.Tk()
     app.title("Server Info")
+    
+    priorServerInfo = get_server_info()
 
     image = tk.PhotoImage(file="./assets/images/logo.png")
 
@@ -333,12 +322,14 @@ def startScreen():
 
     ipEntry = tk.Entry(app)
     ipEntry.grid(column=1, row=1)
+    ipEntry.insert(0, priorServerInfo[0])
 
     portLabel = tk.Label(text="Server Port:")
     portLabel.grid(column=0, row=2, sticky="W", padx=8)
 
     portEntry = tk.Entry(app)
     portEntry.grid(column=1, row=2)
+    portEntry.insert(0,priorServerInfo[1])
 
     errorLabel = tk.Label(text="")
     errorLabel.grid(column=0, row=4, columnspan=2)

@@ -1,5 +1,7 @@
 # You don't need to edit this file at all unless you really want to
 import pygame
+import socket
+import csv
 
 # Constant for message size, in this file because needed globally by both server & client
 PAYLOAD_SIZE = 1024
@@ -63,3 +65,40 @@ def compile_msg(toSend: tuple) -> str:
         result += "," + str(toSend[i])
     
     return result
+
+# Method responsible for sending and receiving the gamestate payload to and from the server.
+def update_server(clientInfo:tuple, client:socket.socket) -> tuple:
+    # send our gamestate to server
+    try:
+        client.send(compile_msg(clientInfo).encode())
+    except:
+        print("Failed to send an update to the server")
+        
+    # get most updated game state from server
+    try:
+        resp = client.recv(PAYLOAD_SIZE)
+    except:
+        print("Failed to receive a response from the server")
+            
+    return parse_msg(resp.decode())
+
+# Method responsible for retrieving previously entered port & IP
+def get_server_info() -> tuple:
+    serverInfo = ("", "")
+    try:
+        with open('lastConnection.csv', newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter=' ')
+            serverInfo = reader.__next__()
+    except:
+        print("lastConnection.csv not found")
+        
+    return serverInfo
+
+# Method responsible for storing entered port & IP
+def set_server_info(serverInfo:tuple) -> None:
+    try:
+        with open('lastConnection.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter = ' ')
+            writer.writerow(serverInfo)
+    except:
+        print("failed to write")
