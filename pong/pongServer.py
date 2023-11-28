@@ -13,7 +13,7 @@ from assets.code.helperCode import parse_msg, compile_msg, PAYLOAD_SIZE
 
 # Server info
 PORT = 12321
-SERVER_IP = "localhost"
+SERVER_IP = "100.70.246.124"
 
 # Global variables for gamestate and lock
 global gamestate

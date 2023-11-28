@@ -59,7 +59,7 @@ def parse_msg(inString:str) -> tuple:
 def compile_msg(toSend: tuple) -> str:
     # Have to process the first data entry separately to ensure appropriate number of commas
     result = str(toSend[0])
-    for i in range(1, 10):
+    for i in range(1, 11):
         result += "," + str(toSend[i])
     
     return result
