@@ -58,9 +58,11 @@ def client_handler(currClient:socket.socket, playerNum:int) -> None:
         if gamestate[0] < msg[0]:
             gamestate = msg
         elif gamestate[0] == msg[0]: # if sync is equal update only your clients info, not opponents info
-            gamestate[1 + playerNum] = msg[1 + playerNum]
-            gamestate[3 + playerNum] = msg[3 + playerNum]
-            gamestate[5 + playerNum] = msg[5 + playerNum]
+            temp = list(gamestate)
+            temp[1 + playerNum] = msg[1 + playerNum]
+            temp[3 + playerNum] = msg[3 + playerNum]
+            temp[5 + playerNum] = msg[5 + playerNum]
+            gamestate = tuple(temp)
 
         currClient.send(compile_msg(gamestate).encode())
         
