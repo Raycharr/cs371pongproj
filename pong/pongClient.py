@@ -122,7 +122,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             
         # If the game is over, display the win message
         if lScore > WIN_CON or rScore > WIN_CON:
-            winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
+            winText = "Left Wins!" if lScore > 4 else "Right Wins!"
             textSurface = winFont.render(winText, False, WHITE, (0,0,0))
             textRect = textSurface.get_rect()
             textRect.center = ((screenWidth/2), screenHeight/2)
@@ -215,7 +215,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
 
         # If the game is over, display the win message
         if lScore > WIN_CON or rScore > WIN_CON:
-            winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
+            winText = "Left Wins!" if lScore > 4 else "Right Wins!"
             textSurface = winFont.render(winText, False, WHITE, (0,0,0))
             textRect = textSurface.get_rect()
             textRect.center = ((screenWidth/2), screenHeight/2)
