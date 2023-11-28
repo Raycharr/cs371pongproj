@@ -9,7 +9,7 @@
 
 import socket
 import threading
-from assets.code.helperCode import parse_msg, compile_msg
+from assets.code.helperCode import parse_msg, compile_msg, PAYLOAD_SIZE
 
 # Server info
 PORT = 12321
@@ -20,8 +20,9 @@ global gamestate
 global gamelock
 
 # Gamestate format:
-# sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y
-gamestate = [-1, -1, -1, -1, -1, -1, -1]
+#sync, lScore, rScore, lpaddle y, rpaddle y, lpaddle moving, rpaddle moving, ball x, ball y, ball vx, ball vy
+#0   , 1     , 2     , 3        , 4        , 5             , 6             , 7     , 8     , 9      , 10
+gamestate = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 gamelock = threading.Lock()
 
 # Function that handles threads. Each thread is responsible for
@@ -42,7 +43,7 @@ def client_handler(currClient:socket.socket, playerNum:int) -> None:
     
     while True:
         
-        msg = currClient.recv(2048).decode()
+        msg = currClient.recv(PAYLOAD_SIZE).decode()
         
         if not msg:
             break
@@ -56,6 +57,11 @@ def client_handler(currClient:socket.socket, playerNum:int) -> None:
         # check sync of msg and gamestate, use more recent frame
         if gamestate[0] < msg[0]:
             gamestate = msg
+        elif gamestate[0] == msg[0]: # if sync is equal update only your clients info, not opponents info
+            gamestate[1 + playerNum] = msg[1 + playerNum]
+            gamestate[3 + playerNum] = msg[3 + playerNum]
+            gamestate[5 + playerNum] = msg[5 + playerNum]
+
         currClient.send(compile_msg(gamestate).encode())
         
         gamelock.release()

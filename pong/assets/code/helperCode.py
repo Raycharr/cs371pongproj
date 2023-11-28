@@ -1,6 +1,9 @@
 # You don't need to edit this file at all unless you really want to
 import pygame
 
+# Constant for message size, in this file because needed globally by both server & client
+PAYLOAD_SIZE = 1024
+
 # This draws the score to the screen
 def updateScore(lScore:int, rScore:int, screen:pygame.surface.Surface, color, scoreFont:pygame.font.Font) -> pygame.Rect:
     textSurface = scoreFont.render(f"{lScore}   {rScore}", False, color)
@@ -41,22 +44,22 @@ class Ball:
         self.xVel = -5 if nowGoing == "left" else 5
         self.yVel = 0
         
-# This function parses a string that follows our standardized formatting
+# This method parses a string that follows our standardized formatting
 # and returns the output as a list.
 def parse_msg(inString:str) -> tuple:
     #split string using comma as the delimiter
     inString = inString.split(",")
     
     #The following line is the standard format
-    #sync, lScore, rScore, lpaddle y, rpaddle y, ball x, ball y, ball vx, ball vy
-    return int(inString[0]), int(inString[1]), int(inString[2]), int(inString[3]), int(inString[4]), int(inString[5]), int(inString[6]), int(inString[7]), int(inString[8])
+    #sync, lScore, rScore, lpaddle y, rpaddle y, lpaddle moving, rpaddle moving, ball x, ball y, ball vx, ball vy
+    return int(inString[0]), int(inString[1]), int(inString[2]), int(inString[3]), int(inString[4]), inString[5], inString[6], int(inString[7]), int(inString[8]), int(inString[9]), int(inString[10])
 
-# This function takes a list in our standard format and returns
+# This method takes a list in our standard format and returns
 # a string with that data in our standard format.
 def compile_msg(toSend: tuple) -> str:
     # Have to process the first data entry separately to ensure appropriate number of commas
     result = str(toSend[0])
-    for i in range(1, 9):
+    for i in range(1, 10):
         result += "," + str(toSend[i])
     
     return result
