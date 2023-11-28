@@ -46,6 +46,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
     WHITE = (255,255,255)
     GRAY = (150,150,150)
     STARTFRAME = 180
+    WIN_CON = 10
     clock = pygame.time.Clock()
     scoreFont = pygame.font.Font("./assets/fonts/pong-score.ttf", 32)
     winFont = pygame.font.Font("./assets/fonts/visitor.ttf", 48)
@@ -135,7 +136,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             pygame.draw.rect(screen, GRAY, i)
             
         # If the game is over, display the win message
-        if lScore > 4 or rScore > 4:
+        if lScore > WIN_CON or rScore > WIN_CON:
             winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
             textSurface = winFont.render(winText, False, WHITE, (0,0,0))
             textRect = textSurface.get_rect()
@@ -228,7 +229,7 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
             opponentPaddleObj.rect.y = serverStatus[3]
 
         # If the game is over, display the win message
-        if lScore > 4 or rScore > 4:
+        if lScore > WIN_CON or rScore > WIN_CON:
             winText = "Player 1 Wins! " if lScore > 4 else "Player 2 Wins! "
             textSurface = winFont.render(winText, False, WHITE, (0,0,0))
             textRect = textSurface.get_rect()
