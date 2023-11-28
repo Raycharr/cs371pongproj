@@ -278,8 +278,8 @@ def playGame(screenWidth:int, screenHeight:int, playerPaddle:str, client:socket.
         scoreRect = updateScore(lScore, rScore, screen, WHITE, scoreFont)
         
         pygame.display.update()
-    sync += 1
-    #===== END UPDATE USING SERVER DATA ===========================================================
+        sync += 1
+        #===== END UPDATE USING SERVER DATA ===========================================================
 
 
 
